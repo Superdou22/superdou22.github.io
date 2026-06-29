@@ -1,8 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<script src="https://puter.com"></script><script src="coi-serviceworker.js"></script>
-<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Spiel im Browser</title>
+    <style>
+        :root {
+            --bg-color: #050508;
+            --card-bg: rgba(15, 18, 28, 0.85);
+            --accent-color: #00f2fe;
+            --accent-purple: #4facfe;
+            --text-main: #ffffff;
+            --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-<h1>Mein Spiel jetzt auch im Browser!!!</h1>
-<a href="Beta 0.4 Web.html">Zum Spiel</a>
-<a href="Mode App Prototyp.html">Mode App</a>
-<a href="Meine KI/Meine KI.html">Meine KI</a>
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Canvas für die High-Speed Partikel */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Cyberpunk Grid-Overlay für extra Tiefe */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 2;
+            animation: pulseGrid 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGrid {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+
+        /* Content UI */
+        .content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 242, 254, 0.3);
+        }
+
+        header p {
+            color: var(--accent-purple);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            margin: 0;
+            animation: glitch 2s infinite;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Action-Buttons mit Neon-Glow */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px 24px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-color) 100%);
+            border: none;
+            color: #000; /* Maximaler Kontrast auf dem leuchtenden Button */
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Hover-Effekte mit brutaler Action */
+        .btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #fff 100%);
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+<div class="grid-overlay"></div>
+
+<div class="content">
+    <header>
+        <p>System Online</p>
+        <h1>Mein Spiel</h1>
+    </header>
+
+    <div class="container">
+        <a href="Beta 0.4 Web.html" class="btn btn-primary">Jetzt Spielen (Beta 0.4)</a>
+        <a href="Mode App Prototyp.html" class="btn">Mode App Prototyp</a>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const numParticles = 120;
+    const particles = [];
+    let mouse = { x: null, y: null, radius: 150 };
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.x;
+        mouse.y = e.y;
+    });
+
+    window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = (Math.random() - 0.5) * 4; // Höheres Tempo
+            this.speedY = (Math.random() - 0.5) * 4;
+            this.color = Math.random() > 0.5 ? '#00f2fe' : '#4facfe';
+        }
+
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            // Ränder prüfen
+            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                this.reset();
+            }
+
+            // Maus-Interaktion (Abstoßung mit High-Speed)
+            if (mouse.x != null && mouse.y != null) {
+                let dx = this.x - mouse.x;
+                let dy = this.y - mouse.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    let force = (mouse.radius - distance) / mouse.radius;
+                    let directionX = dx / distance;
+                    let directionY = dy / distance;
+                    this.x += directionX * force * 8;
+                    this.y += directionY * force * 8;
+                }
+            }
+        }
+
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = this.color;
+            ctx.fill();
+        }
+    }
+
+    // Partikel-Array füllen
+    for (let i = 0; i < numParticles; i++) {
+        particles.push(new Particle());
+    }
+
+    // Animation-Loop
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.shadowBlur = 0; // Reset für Performance
+        
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+</script>
+
+</body>
+</html>
