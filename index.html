@@ -1,258 +1,157 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="cyber-blue">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mein Spiel im Browser</title>
+    
+    <!-- Google Fonts Import für alle Sci-Fi & Retro-Themes -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #050508;
-            --card-bg: rgba(15, 18, 28, 0.85);
-            --accent-color: #00f2fe;
-            --accent-purple: #4facfe;
-            --text-main: #ffffff;
-            --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        /* --- THEME-VARIABLEN --- */
+        :root[data-theme="cyber-blue"] { 
+            --bg: #050508; --card: rgba(15, 18, 28, 0.75); --acc: #00f2fe; --pur: #4facfe; 
+            --font: 'Orbitron', sans-serif; --grid: 40px; --glow: 0 0 20px rgba(0, 242, 254, 0.6); 
+        }
+        :root[data-theme="acid-hacker"] { 
+            --bg: #020604; --card: rgba(5, 15, 10, 0.85); --acc: #39ff14; --pur: #00ffaa; 
+            --font: 'Share Tech Mono', monospace; --grid: 20px; --glow: 0 0 15px rgba(57, 255, 20, 0.5); 
+        }
+        :root[data-theme="synthwave"] { 
+            --bg: #0f051d; --card: rgba(30, 15, 45, 0.75); --acc: #ff007f; --pur: #9d4edd; 
+            --font: 'VT323', monospace; --grid: 50px; --glow: 0 0 25px rgba(255, 0, 127, 0.6); 
+        }
+        :root[data-theme="crimson"] { 
+            --bg: #0a0202; --card: rgba(28, 10, 10, 0.75); --acc: #ff003c; --pur: #ff6a00; 
+            --font: 'Orbitron', sans-serif; --grid: 30px; --glow: 0 0 20px rgba(255, 0, 60, 0.6); 
+        }
+        :root[data-theme="wasteland"] { 
+            --bg: #0e0f11; --card: rgba(24, 26, 30, 0.85); --acc: #fcee0a; --pur: #ff0055; 
+            --font: monospace; --grid: 45px; --glow: 0 0 10px rgba(252, 238, 10, 0.4); 
+        }
+        :root[data-theme="ice-protocol"] { 
+            --bg: #050b14; --card: rgba(15, 26, 46, 0.7); --acc: #00ffff; --pur: #70a1ff; 
+            --font: 'Orbitron', sans-serif; --grid: 60px; --glow: 0 0 20px rgba(0, 255, 255, 0.5); 
+        }
+        :root[data-theme="tokyo-neon"] { 
+            --bg: #060212; --card: rgba(20, 12, 38, 0.75); --acc: #ff5e00; --pur: #e0115f; 
+            --font: 'Orbitron', sans-serif; --grid: 35px; --glow: 0 0 20px rgba(255, 94, 0, 0.6); 
+        }
+        :root[data-theme="luxury-gold"] { 
+            --bg: #030303; --card: rgba(18, 17, 15, 0.85); --acc: #ffcc00; --pur: #b8860b; 
+            --font: 'Orbitron', sans-serif; --grid: 40px; --glow: 0 0 15px rgba(255, 204, 0, 0.5); 
         }
 
-        body {
-            font-family: var(--font-stack);
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
+        /* --- BASIS LAYOUT --- */
+        body { 
+            font-family: var(--font); background: var(--bg); color: #fff; margin: 0; 
+            height: 100vh; display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; position: relative; transition: background 0.4s ease; 
+        }
+        
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .grid-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); 
+            background-size: var(--grid) var(--grid); z-index: 2; pointer-events: none;
         }
 
-        /* Canvas für die High-Speed Partikel */
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
+        /* --- THEME-SWITCHER DROPDOWN --- */
+        .theme-switcher-container { position: absolute; top: 20px; right: 20px; z-index: 10; }
+        
+        .theme-switcher { 
+            background: var(--card); border: 1px solid var(--acc); color: #fff; 
+            padding: 10px 15px; border-radius: 8px; font-family: var(--font); 
+            cursor: pointer; font-weight: bold; outline: none; transition: 0.3s ease;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .theme-switcher:hover, .theme-switcher:focus { box-shadow: var(--glow); border-color: #fff; }
+        .theme-switcher option { background: #111; color: #fff; }
+
+        /* --- CONTENT & CARD (Glasmorphismus) --- */
+        .content { 
+            position: relative; z-index: 3; text-align: center; width: 100%; 
+            max-width: 480px; padding: 40px 30px; border-radius: 20px;
+            background: var(--card); border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: border-color 0.4s ease;
+        }
+        .content:hover { border-color: rgba(255, 255, 255, 0.15); }
+
+        /* --- TYPOGRAFIE --- */
+        h1 { 
+            font-size: 2.8rem; font-weight: 900; text-transform: uppercase; margin: 0 0 5px 0; 
+            background: linear-gradient(135deg, #fff, var(--acc)); -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+            letter-spacing: -0.02em; min-height: 70px; /* Verhindert das Springen des Menüs bei Textwechsel */
+        }
+        header p { 
+            color: var(--pur); font-weight: 700; text-transform: uppercase; 
+            letter-spacing: 0.25em; margin: 0 0 35px 0; font-size: 0.9rem;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
 
-        /* Cyberpunk Grid-Overlay für extra Tiefe */
-        .grid-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 2;
-            animation: pulseGrid 4s ease-in-out infinite alternate;
+        /* --- BUTTONS --- */
+        .container { display: flex; flex-direction: column; gap: 15px; }
+        
+        .btn { 
+            display: flex; align-items: center; justify-content: center; padding: 18px; 
+            color: #fff; text-decoration: none; border-radius: 12px; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
         }
-
-        @keyframes pulseGrid {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.8; }
+        
+        /* Primärer Button (Spielen) */
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--pur), var(--acc)); color: #050508; 
+            border: none; font-weight: 900; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-
-        /* Content UI */
-        .content {
-            position: relative;
-            z-index: 3;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-
-        header {
-            margin-bottom: 40px;
-        }
-
-        h1 {
-            font-size: 3.2rem;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #fff 30%, var(--accent-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(0, 242, 254, 0.3);
-        }
-
-        header p {
-            color: var(--accent-purple);
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-            margin: 0;
-            animation: glitch 2s infinite;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Action-Buttons mit Neon-Glow */
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 22px 24px;
-            background: var(--card-bg);
-            color: var(--text-main);
-            text-decoration: none;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-color) 100%);
-            border: none;
-            color: #000; /* Maximaler Kontrast auf dem leuchtenden Button */
-            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-        }
-
-        /* Hover-Effekte mit brutaler Action */
-        .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--accent-color) 0%, #fff 100%);
-            box-shadow: 0 0 50px rgba(0, 242, 254, 0.7);
-        }
+        
+        /* Hover-Effekte */
+        .btn:hover { transform: translateY(-3px); border-color: var(--acc); box-shadow: var(--glow); }
+        .btn-primary:hover { filter: brightness(1.1); box-shadow: var(--glow), 0 6px 20px rgba(0,0,0,0.3); }
+        .btn:active { transform: translateY(-1px); }
     </style>
-<script src="coi-serviceworker.js"></script>
+    
+    <script src="coi-serviceworker.js" defer></script>
 </head>
 <body>
+
+<div class="theme-switcher-container">
+    <label for="themeSelect" class="visually-hidden" style="display:none;">Theme wählen:</label>
+    <select id="themeSelect" class="theme-switcher">
+        <option value="cyber-blue">Cyber Blue</option>
+        <option value="acid-hacker">Acid Hacker</option>
+        <option value="synthwave">Synthwave Night</option>
+        <option value="crimson">Crimson Overdrive</option>
+        <option value="wasteland">Wasteland Scrap</option>
+        <option value="ice-protocol">Ice Protocol</option>
+        <option value="tokyo-neon">Tokyo Neon</option>
+        <option value="luxury-gold">Luxury Gold</option>
+    </select>
+</div>
 
 <canvas id="particleCanvas"></canvas>
 <div class="grid-overlay"></div>
 
-<div class="content">
+<main class="content">
     <header>
+        <!-- Das Skript steuert diesen Textbereich an -->
+        <h1 id="typingTitle">&nbsp;</h1>
         <p>System Online</p>
-        <h1>Mein Spiel</h1>
     </header>
-
-    <div class="container">
+    <nav class="container">
         <a href="Beta 0.4 Web.html" class="btn btn-primary">Jetzt Spielen (Beta 0.4)</a>
         <a href="Mode App Prototyp.html" class="btn">Mode App Prototyp</a>
-    </div>
-</div>
+    </nav>
+</main>
 
-<script>
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    const numParticles = 120;
-    const particles = [];
-    let mouse = { x: null, y: null, radius: 150 };
-
-    window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    });
-
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-    });
-
-    window.addEventListener('mouseout', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    class Particle {
-        constructor() {
-            this.reset();
-        }
-
-        reset() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = (Math.random() - 0.5) * 4; // Höheres Tempo
-            this.speedY = (Math.random() - 0.5) * 4;
-            this.color = Math.random() > 0.5 ? '#00f2fe' : '#4facfe';
-        }
-
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            // Ränder prüfen
-            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
-                this.reset();
-            }
-
-            // Maus-Interaktion (Abstoßung mit High-Speed)
-            if (mouse.x != null && mouse.y != null) {
-                let dx = this.x - mouse.x;
-                let dy = this.y - mouse.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < mouse.radius) {
-                    let force = (mouse.radius - distance) / mouse.radius;
-                    let directionX = dx / distance;
-                    let directionY = dy / distance;
-                    this.x += directionX * force * 8;
-                    this.y += directionY * force * 8;
-                }
-            }
-        }
-
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = this.color;
-            ctx.fill();
-        }
-    }
-
-    // Partikel-Array füllen
-    for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-    }
-
-    // Animation-Loop
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.shadowBlur = 0; // Reset für Performance
-        
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-</script>
-
+<script src="script.js" defer></script>
 </body>
 </html>
