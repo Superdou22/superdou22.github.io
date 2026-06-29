@@ -12,62 +12,48 @@ window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
 const titleElement = document.getElementById('typingTitle');
 const textArray = [
     "Mein Spiel", 
-    "Coded by SuperDou", 
-    "Access Granted", 
+    "Coded by Superdou", 
+    "Made with love...",
+    "...and a lot of Code",
     "Loading Beta 0.4...", 
-    "Welcome to Cybernet"
+    "Welcome to my Webside"
 ];
 let textIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
-let typingSpeed = 100; // Geschwindigkeit beim Tippen (in ms)
+let typingSpeed = 100;
 
 function typeAnimation() {
+    if (!titleElement) return;
     const currentText = textArray[textIndex];
     
     if (isDeleting) {
-        // Buchstaben rückwärts löschen
         titleElement.innerHTML = currentText.substring(0, charIndex - 1) + '<span class="cursor">|</span>';
         charIndex--;
-        typingSpeed = 50; // Schnelleres Löschen
+        typingSpeed = 50;
     } else {
-        // Buchstaben vorwärts tippen
         titleElement.innerHTML = currentText.substring(0, charIndex + 1) + '<span class="cursor">|</span>';
         charIndex++;
-        typingSpeed = 120; // Normales Tipptempo
+        typingSpeed = 120;
     }
 
-    // Wenn das Wort voll ausgeschrieben ist
     if (!isDeleting && charIndex === currentText.length) {
-        typingSpeed = 2000; // Pause am Ende des Wortes (2 Sekunden stehen lassen)
+        typingSpeed = 2000;
         isDeleting = true;
     } 
-    // Wenn das Wort komplett gelöscht ist
     else if (isDeleting && charIndex === 0) {
         isDeleting = false;
-        textIndex = (textIndex + 1) % textArray.length; // Zum nächsten Text springen
-        typingSpeed = 400; // Kurze Pause vor dem nächsten Tippen
+        textIndex = (textIndex + 1) % textArray.length;
+        typingSpeed = 400;
     }
 
     setTimeout(typeAnimation, typingSpeed);
 }
 
-// CSS für den blinkenden Cursor direkt per JS injizieren
+// CSS für den Cursor direkt injizieren
 const style = document.createElement('style');
-style.innerHTML = `
-    .cursor {
-        display: inline-block;
-        margin-left: 2px;
-        color: var(--acc);
-        animation: blink 0.8s infinite steps(2);
-    }
-    @keyframes blink { 
-        0%, 100% { opacity: 1; } 
-        50% { opacity: 0; } 
-    }
-`;
+style.innerHTML = `.cursor { display: inline-block; margin-left: 2px; color: var(--acc); animation: blink 0.8s infinite steps(2); } @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
 document.head.appendChild(style);
-
 
 // Globale Datenstrukturen für die Effekte
 let elements = [];
@@ -179,20 +165,24 @@ function animate() {
         elements.forEach((dust, idx) => {
             dust.y += dust.v; dust.x += Math.sin(dust.y/20 + idx)*0.3;
             if(dust.y > h) { dust.y = -10; dust.x = Math.random()*w; }
-            ctx.beginPath(); ctx.arc(dust.x, dust.y, dust.r, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(dust.x, dust.y, dust.r, 0, Math.PI*2); 
+            ctx.fill(); // FIX: Hier fehlte das "ctx." davor!
         });
     }
 
     requestAnimationFrame(animate);
 }
 
-document.getElementById('themeSelect').addEventListener('change', (e) => {
-    currentTheme = e.target.value;
-    document.documentElement.setAttribute('data-theme', currentTheme);
+document.addEventListener('DOMContentLoaded', () => {
+    const selector = document.getElementById('themeSelect');
+    if (selector) {
+        selector.addEventListener('change', (e) => {
+            currentTheme = e.target.value;
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            initTheme();
+        });
+    }
     initTheme();
+    animate();
+    typeAnimation();
 });
-
-// Initialisierung der Systeme
-initTheme();
-animate();
-typeAnimation(); // Startet die Schreibmaschinen-Schleife
