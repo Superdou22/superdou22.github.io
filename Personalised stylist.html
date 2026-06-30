@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalised stylist - Next Gen Fashion AI</title>
+    <style>
+        :root {
+            --primary: #DAC9BF;
+            --primary-light: #f5eeea;
+            --primary-dark: #bbaaa0;
+            --bg-gradient: linear-gradient(135deg, #fffcfb 0%, #f5f0ec 40%, #e8ded7 100%);
+            --text-main: #232323;
+            --text-muted: #656565;
+            --glass: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Weiche, leuchtende Farbakzente im Hintergrund */
+        .gradient-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(218,201,191,0.6) 0%, rgba(255,255,255,0) 70%);
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+            filter: blur(50px);
+            pointer-events: none;
+        }
+
+        /* Edler Glaseffekt-Header */
+        header {
+            padding: 30px 8%;
+            display: flex;
+            justify-content: center; /* Zentriert, da Status-Badge weg ist */
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--primary-dark);
+            text-shadow: 0 0 10px rgba(218,201,191,0.4);
+        }
+
+        /* Hero Bereich mit Text-Verlauf */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 8% 120px 8%;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero-tag {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 76px);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            max-width: 1000px;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: clamp(16px, 1.8vw, 22px);
+            color: var(--text-muted);
+            max-width: 650px;
+            margin-bottom: 50px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* Leuchtender Demo Button */
+        .demo-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px 50px;
+            color: white;
+            background: linear-gradient(135deg, var(--text-main) 0%, #454545 100%);
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            border-radius: 40px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(35, 35, 35, 0.15);
+        }
+
+        .demo-trigger:hover {
+            transform: scale(1.05) translateY(-3px);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--text-main) 100%);
+            box-shadow: 0 20px 40px rgba(218, 201, 191, 0.4);
+        }
+
+        /* Grid-Bereich aus flüssigem Milchglas */
+        .workflow {
+            padding: 120px 8%;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 50px 40px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(218, 201, 191, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 40px rgba(218, 201, 191, 0.25);
+            border-color: var(--primary);
+        }
+
+        .step-num {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            display: block;
+            letter-spacing: 2px;
+        }
+
+        .glass-card h3 {
+            font-size: 26px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .glass-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 8%;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 20px 5%; }
+            .hero { padding: 60px 5% 80px 5%; }
+            .workflow { padding: 60px 5%; }
+            footer { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-orb"></div>
+
+    <!-- Navigation -->
+    <header>
+        <div class="logo">Personal<span>i</span>sed styl<span>i</span>st</div>
+    </header>
+
+    <!-- Hero Bereich -->
+    <section class="hero">
+        <div class="hero-tag">Smart Fashion Engine</div>
+        <h1>Ein Foto.<br>Dein perfektes Outfit.</h1>
+        <p>Lass starre Moderegeln hinter dir. Unsere künstliche Intelligenz scannt deine Silhouette und kreiert sofort fließende Looks, maßgeschneidert auf deine Persönlichkeit.</p>
+        
+        <!-- Runder, moderner Button -->
+        <a href="Mode%20App%20Prototyp.html" class="demo-trigger">Jetzt Demo testen ➔</a>
+    </section>
+
+    <!-- Interaktive Glaskarten -->
+    <section class="workflow">
+        <div class="section-title">Dein digitaler Kleiderschrank</div>
+        <div class="grid">
+            
+            <div class="glass-card">
+                <span class="step-num">01 / CAPTURE</span>
+                <h3>Visual Scan</h3>
+                <p>Ein einziges Bild blickt hinter den Standard. Die KI erfasst Schnitte, Maße und deine einzigartige Silhouette präzise im Raum.</p>
+            </div>
+
+            <div class="glass-card">
+                <span class="step-num">02 / INSIGHT</span>
+                <h3>Deep Analysis</h3>
+                <p>Intelligente Algorithmen harmonisieren Hautuntertöne, globale Modeströmungen und die Wetterlage an deinem aktuellen Standort.</p>
+            </div>
+
+            <div class="glass-card">
+                <span class="step-num">03 / CREATION</span>
+                <h3>The Match</h3>
+                <p>Es entstehen vollkommen neue, kuratierte Outfit-Kombinationen, die deine Persönlichkeit ästhetisch auf das nächste Level heben.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div>&copy; 2026 Personalised stylist.</div>
+        <div>Style Identity: #DAC9BF</div>
+    </footer>
+
+</body>
+</html>
