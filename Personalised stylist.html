@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Weiche, leuchtende Farbakzente im Hintergrund */
         .gradient-orb {
             position: absolute;
             width: 600px;
@@ -43,11 +42,10 @@
             pointer-events: none;
         }
 
-        /* Edler Glaseffekt-Header */
         header {
             padding: 30px 8%;
             display: flex;
-            justify-content: center; /* Zentriert, da Status-Badge weg ist */
+            justify-content: center;
             align-items: center;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(20px);
@@ -70,17 +68,29 @@
             text-shadow: 0 0 10px rgba(218,201,191,0.4);
         }
 
-        /* Hero Bereich mit Text-Verlauf */
+        /* Hero Layout mit 2 Spalten für Text und Bild */
         .hero {
-            min-height: 80vh;
+            min-height: 85vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 80px 8% 120px 8%;
+            justify-content: center;
+            padding: 60px 8% 100px 8%;
             position: relative;
             z-index: 5;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+            gap: 60px;
+        }
+
+        .hero-text {
+            flex: 1;
+            text-align: left;
         }
 
         .hero-tag {
@@ -93,12 +103,11 @@
         }
 
         .hero h1 {
-            font-size: clamp(36px, 6vw, 76px);
+            font-size: clamp(34px, 4.5vw, 64px);
             font-weight: 900;
-            line-height: 1.1;
+            line-height: 1.15;
             letter-spacing: -2px;
             text-transform: uppercase;
-            max-width: 1000px;
             margin-bottom: 35px;
             background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-dark) 100%);
             -webkit-background-clip: text;
@@ -106,15 +115,37 @@
         }
 
         .hero p {
-            font-size: clamp(16px, 1.8vw, 22px);
+            font-size: 18px;
             color: var(--text-muted);
-            max-width: 650px;
             margin-bottom: 50px;
             font-weight: 400;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* Leuchtender Demo Button */
+        .hero-image-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Schwebendes App Bild */
+        .app-mockup {
+            max-width: 340px;
+            width: 100%;
+            height: auto;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(187, 170, 160, 0.3);
+            animation: floatAnimation 5s ease-in-out infinite;
+            border: 4px solid white;
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
         .demo-trigger {
             display: inline-flex;
             align-items: center;
@@ -138,7 +169,6 @@
             box-shadow: 0 20px 40px rgba(218, 201, 191, 0.4);
         }
 
-        /* Grid-Bereich aus flüssigem Milchglas */
         .workflow {
             padding: 120px 8%;
             position: relative;
@@ -202,7 +232,6 @@
             line-height: 1.6;
         }
 
-        /* Footer */
         footer {
             padding: 60px 8%;
             background: rgba(255, 255, 255, 0.3);
@@ -218,9 +247,15 @@
             text-transform: uppercase;
         }
 
+        @media (max-width: 900px) {
+            .hero-container { flex-direction: column; text-align: center; gap: 40px; }
+            .hero-text { text-align: center; }
+            .hero-image-area { order: -1; }
+        }
+
         @media (max-width: 768px) {
             header { padding: 20px 5%; }
-            .hero { padding: 60px 5% 80px 5%; }
+            .hero { padding: 40px 5% 60px 5%; }
             .workflow { padding: 60px 5%; }
             footer { flex-direction: column; gap: 15px; text-align: center; }
         }
@@ -237,12 +272,22 @@
 
     <!-- Hero Bereich -->
     <section class="hero">
-        <div class="hero-tag">Smart Fashion Engine</div>
-        <h1>Ein Foto.<br>Dein perfektes Outfit.</h1>
-        <p>Lass starre Moderegeln hinter dir. Unsere künstliche Intelligenz scannt deine Silhouette und kreiert sofort fließende Looks, maßgeschneidert auf deine Persönlichkeit.</p>
-        
-        <!-- Runder, moderner Button -->
-        <a href="Mode%20App%20Prototyp.html" class="demo-trigger">Jetzt Demo testen ➔</a>
+        <div class="hero-container">
+            
+            <!-- Linker Textbereich -->
+            <div class="hero-text">
+                <div class="hero-tag">Smart Fashion Engine</div>
+                <h1>Ein Foto.<br>Dein perfektes Outfit.</h1>
+                <p>Lass starre Moderegeln hinter dir. Unsere künstliche Intelligenz scannt deine Silhouette und kreiert sofort fließende Looks, maßgeschneidert auf deine Persönlichkeit.</p>
+                <a href="Mode%20App%20Prototyp.html" class="demo-trigger">Jetzt Demo testen ➔</a>
+            </div>
+
+            <!-- Rechter Bildbereich (Fügt deine PNG-Datei ein) -->
+            <div class="hero-image-area">
+                <img src="Mode%20App%20Prototyp.png" alt="Personalised stylist App Prototyp" class="app-mockup">
+            </div>
+
+        </div>
     </section>
 
     <!-- Interaktive Glaskarten -->
