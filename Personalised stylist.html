@@ -11,7 +11,7 @@
             --primary-dark: #bbaaa0;
             --bg-gradient: linear-gradient(135deg, #fffcfb 0%, #f5f0ec 40%, #e8ded7 100%);
             --text-main: #232323;
-            --text-muted: #656565;
+            --text-muted: #555555;
             --glass: rgba(255, 255, 255, 0.45);
             --glass-border: rgba(255, 255, 255, 0.6);
         }
@@ -21,6 +21,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -41,11 +42,10 @@
             filter: blur(50px);
             pointer-events: none;
         }
-
         header {
-            padding: 30px 8%;
+            padding: 20px 8%;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(20px);
@@ -57,10 +57,11 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .logo span {
@@ -68,7 +69,89 @@
             text-shadow: 0 0 10px rgba(218,201,191,0.4);
         }
 
-        /* Hero Layout mit 2 Spalten für Text und Bild */
+        .nav-container {
+            position: relative;
+            padding-bottom: 10px; 
+            margin-bottom: -10px;
+        }
+
+        .dropdown-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-container:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-container:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% - 5px); 
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            min-width: 220px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(35, 35, 35, 0.1);
+            list-style: none;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 16px 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-light);
+            color: var(--text-main);
+            padding-left: 30px;
+        }
+
         .hero {
             min-height: 85vh;
             display: flex;
@@ -129,7 +212,6 @@
             position: relative;
         }
 
-        /* Schwebendes App Bild */
         .app-mockup {
             max-width: 340px;
             width: 100%;
@@ -232,6 +314,27 @@
             line-height: 1.6;
         }
 
+        .about-section {
+            padding: 120px 8%;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+        }
+
+        .about-card {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .about-card p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
         footer {
             padding: 60px 8%;
             background: rgba(255, 255, 255, 0.3);
@@ -255,34 +358,39 @@
 
         @media (max-width: 768px) {
             header { padding: 20px 5%; }
+            .dropdown-menu { right: auto; left: 50%; transform: translateX(-50%) translateY(5px); top: calc(100% - 5px); }
+            .nav-container:hover .dropdown-menu { transform: translateX(-50%) translateY(0); }
             .hero { padding: 40px 5% 60px 5%; }
-            .workflow { padding: 60px 5%; }
+            .workflow, .about-section { padding: 60px 5%; }
             footer { flex-direction: column; gap: 15px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="gradient-orb"></div>
-
-    <!-- Navigation -->
     <header>
         <div class="logo">Personal<span>i</span>sed styl<span>i</span>st</div>
+        
+        <div class="nav-container">
+            <button class="dropdown-btn" aria-haspopup="true">Menü</button>
+            <ul class="dropdown-menu">
+                <li><a href="/Personalised%20stylist/was%20wir%20machen.html">Was wir machen</a></li>
+                <li><a href="/Personalised%20stylist/%C3%BCber%20uns.html">Über uns</a></li>
+                <li><a href="/Personalised%20stylist/unsere%20demo.html">Unsere Demo</a></li>
+            </ul>
+        </div>
     </header>
 
-    <!-- Hero Bereich -->
     <section class="hero">
         <div class="hero-container">
-            
-            <!-- Linker Textbereich -->
+                        
             <div class="hero-text">
                 <div class="hero-tag">Smart Fashion Engine</div>
                 <h1>Ein Foto.<br>Dein perfektes Outfit.</h1>
                 <p>Lass starre Moderegeln hinter dir. Unsere künstliche Intelligenz scannt deine Silhouette und kreiert sofort fließende Looks, maßgeschneidert auf deine Persönlichkeit.</p>
-                <a href="Mode%20App%20Prototyp.html" class="demo-trigger">Jetzt Demo testen ➔</a>
+                <a href="/Personalised%20stylist/unsere%20demo.html" class="demo-trigger">Jetzt Demo testen ➔</a>
             </div>
 
-            <!-- Rechter Bildbereich (Fügt deine PNG-Datei ein) -->
             <div class="hero-image-area">
                 <img src="Mode%20App%20Prototyp.png" alt="Personalised stylist App Prototyp" class="app-mockup">
             </div>
@@ -290,11 +398,10 @@
         </div>
     </section>
 
-    <!-- Interaktive Glaskarten -->
     <section class="workflow">
         <div class="section-title">Dein digitaler Kleiderschrank</div>
         <div class="grid">
-            
+                        
             <div class="glass-card">
                 <span class="step-num">01 / CAPTURE</span>
                 <h3>Visual Scan</h3>
@@ -316,7 +423,13 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <section class="about-section">
+        <div class="about-card glass-card">
+            <div class="section-title" style="margin-bottom: 30px;">Über uns</div>
+            <p>Wir glauben, dass Mode kein Diktat ist, sondern Identität. Unser Team verbindet High-End-Couture-Verständnis mit modernster Computer-Vision-Technologie, um die persönliche Stilberatung für jeden Menschen zugänglich zu machen – digital, intuitiv und in Echtzeit.</p>
+        </div>
+    </section>
+
     <footer>
         <div>&copy; 2026 Personalised stylist.</div>
         <div>Style Identity: #DAC9BF</div>
