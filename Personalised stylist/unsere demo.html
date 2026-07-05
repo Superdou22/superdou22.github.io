@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsere Demo - Personalised stylist</title>
+    <style>
+        :root {
+            --primary: #DAC9BF;
+            --primary-light: #f5eeea;
+            --primary-dark: #bbaaa0;
+            --bg-gradient: linear-gradient(135deg, #fffcfb 0%, #f5f0ec 40%, #e8ded7 100%);
+            --text-main: #232323;
+            --text-muted: #555555;
+            --glass: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(218,201,191,0.6) 0%, rgba(255,255,255,0) 70%);
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+            filter: blur(50px);
+            pointer-events: none;
+        }
+
+        header {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: var(--primary-dark);
+        }
+
+        .nav-container {
+            position: relative;
+            padding-bottom: 10px; 
+            margin-bottom: -10px;
+        }
+
+        .dropdown-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--primary);
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .nav-container:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% - 5px); 
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            min-width: 220px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(35, 35, 35, 0.1);
+            list-style: none;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 16px 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-light);
+            padding-left: 30px;
+        }
+
+        .content-wrapper {
+            padding: 80px 8% 120px 8%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: clamp(30px, 4vw, 50px);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* Demo-Plattform Card */
+        .demo-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 55px 45px;
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px rgba(187, 170, 160, 0.12);
+            max-width: 750px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .demo-icon {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+        }
+
+        .demo-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 45px;
+        }
+
+        .demo-text strong {
+            color: var(--text-main);
+        }
+
+        .demo-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px 50px;
+            color: white;
+            background: linear-gradient(135deg, var(--text-main) 0%, #454545 100%);
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            border-radius: 40px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(35, 35, 35, 0.15);
+        }
+
+        .demo-trigger:hover {
+            transform: scale(1.05) translateY(-3px);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--text-main) 100%);
+            box-shadow: 0 20px 40px rgba(218, 201, 191, 0.4);
+        }
+
+        footer {
+            padding: 60px 8%;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 20px 5%; }
+            .dropdown-menu { right: auto; left: 50%; transform: translateX(-50%) translateY(5px); }
+            .content-wrapper { padding: 40px 5% 60px 5%; }
+            .demo-card { padding: 40px 25px; }
+            footer { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-orb"></div>
+
+    <header>
+        <div class="logo">Personal<span>i</span>sed styl<span>i</span>st</div>
+        
+        <div class="nav-container">
+            <button class="dropdown-btn" aria-haspopup="true">Menü</button>
+            <ul class="dropdown-menu">
+                <li><a href="/Personalised%20stylist/was%20wir%20machen.html">Was wir machen</a></li>
+                <li><a href="/Personalised%20stylist/%C3%BCber%20uns.html">Über uns</a></li>
+                <li><a href="/Personalised%20stylist/unsere%20demo.html">Unsere Demo</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="content-wrapper">
+        <h1 class="page-title">Digitaler Showroom</h1>
+        <div class="page-subtitle">Erlebe Mode ganz neu</div>
+
+        <div class="demo-card">
+            <div class="demo-icon">✦</div>
+            
+            <p class="demo-text">
+                Herzlich willkommen in unserem interaktiven Showroom! Wir möchten dir zeigen, wie leicht und intuitiv sich moderne Stilberatung anfühlen kann. Unser Team hat einen exklusiven <strong>Prototyp</strong> entwickelt, mit dem du einen ersten Blick auf die Benutzeroberfläche und die fließenden Funktionen unserer App werfen kannst. Klicke einfach auf den Button unten, um die Demo zu starten und die Zukunft deines Kleiderschranks zu entdecken. Viel Spaß beim Ausprobieren!
+            </p>
+
+            <!-- Der direkte Link zu deiner Prototyp-Datei -->
+            <a href="Mode%20App%20Prototyp.html" class="demo-trigger">Jetzt Demo starten ➔</a>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2026 Personalised stylist.</div>
+        <div>Style Identity: #DAC9BF</div>
+    </footer>
+
+</body>
+</html>

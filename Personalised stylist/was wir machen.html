@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was wir machen - Personalised stylist</title>
+    <style>
+        :root {
+            --primary: #DAC9BF;
+            --primary-light: #f5eeea;
+            --primary-dark: #bbaaa0;
+            --bg-gradient: linear-gradient(135deg, #fffcfb 0%, #f5f0ec 40%, #e8ded7 100%);
+            --text-main: #232323;
+            --text-muted: #656565;
+            --glass: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(218,201,191,0.5) 0%, rgba(255,255,255,0) 70%);
+            top: -200px;
+            right: -100px;
+            z-index: 0;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
+        header {
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .logo span { color: var(--primary-dark); }
+
+        .nav-container { position: relative; padding-bottom: 10px; margin-bottom: -10px; }
+
+        .dropdown-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover { background: rgba(255, 255, 255, 0.7); border-color: var(--primary); }
+        .dropdown-btn::after { content: '▼'; font-size: 10px; color: var(--text-muted); }
+        .nav-container:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% - 5px); 
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            min-width: 220px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(35, 35, 35, 0.1);
+            list-style: none;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .dropdown-menu li a {
+            display: block;
+            padding: 16px 24px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover { background: var(--primary-light); padding-left: 30px; }
+
+        .content-wrapper {
+            padding: 100px 10% 150px 10%;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero-section-title {
+            text-align: left;
+            margin-bottom: 100px;
+            max-width: 800px;
+        }
+
+        .hero-section-title span {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .hero-section-title h1 {
+            font-size: clamp(36px, 5vw, 68px);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            color: var(--text-main);
+        }
+
+        .highlight-text {
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .editorial-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 80px;
+            margin-bottom: 120px;
+            position: relative;
+        }
+
+        .editorial-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .editorial-meta {
+            flex: 1;
+            position: sticky;
+            top: 140px;
+        }
+
+        .giant-number {
+            font-size: clamp(80px, 10vw, 140px);
+            font-weight: 900;
+            line-height: 0.8;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--primary-dark);
+            opacity: 0.4;
+            margin-bottom: 15px;
+        }
+
+        .editorial-meta h2 {
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        .editorial-text {
+            flex: 1.5;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 55px;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(218, 201, 191, 0.08);
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        .editorial-text p strong {
+            color: var(--text-main);
+        }
+
+        footer {
+            padding: 60px 8%;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 968px) {
+            .editorial-row, .editorial-row:nth-child(even) { flex-direction: column; gap: 30px; margin-bottom: 80px; }
+            .editorial-meta { position: static; }
+            .giant-number { margin-bottom: 5px; }
+            .editorial-text { padding: 35px; width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 20px 5%; }
+            .content-wrapper { padding: 60px 5% 100px 5%; }
+            .hero-section-title { margin-bottom: 60px; }
+            footer { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-orb"></div>
+
+    <header>
+        <div class="logo">Personal<span>i</span>sed styl<span>i</span>st</div>
+        
+        <div class="nav-container">
+            <button class="dropdown-btn" aria-haspopup="true">Menü</button>
+            <ul class="dropdown-menu">
+                <li><a href="/Personalised%20stylist/was%20wir%20machen.html">Was wir machen</a></li>
+                <li><a href="/Personalised%20stylist/%C3%BCber%20uns.html">Über uns</a></li>
+                <li><a href="/Personalised%20stylist/unsere%20demo.html">Unsere Demo</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="content-wrapper">
+        
+        <div class="hero-section-title">
+            <span>Identity & Origin</span>
+            <h1>Wer wir sind und <br><span class="highlight-text">wie alles begann.</span></h1>
+        </div>
+
+        <div class="editorial-container">
+            
+            <!-- Sektion 1: Das Unternehmen -->
+            <div class="editorial-row">
+                <div class="editorial-meta">
+                    <div class="giant-number">01</div>
+                    <h2>Das Unternehmen</h2>
+                </div>
+                <div class="editorial-text">
+                    <p>
+                        <strong>Personalised stylist</strong> ist kein gewöhnliches Mode-Unternehmen – wir sind ein agiles Next-Gen Fashion-Tech-Startup. Unser Team versteht sich als Brücke zwischen digitaler Innovation und der zeitlosen Welt der Ästhetik. Uns treibt der Mut an, eingefahrene Konventionen radikal aufzubrechen und modernste künstliche Intelligenz so menschlich, nahbar und elegant wie möglich zu gestalten.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Sektion 2: Unsere Herkunft (Wandertag im NewYorker) -->
+            <div class="editorial-row">
+                <div class="editorial-meta">
+                    <div class="giant-number">02</div>
+                    <h2>Unsere Herkunft</h2>
+                </div>
+                <div class="editorial-text">
+                    <p>
+                        Die zündende Idee überkam uns an einem völlig unerwarteten Ort: <strong>während eines gemeinsamen Wandertags im NewYorker</strong>. Mitten zwischen den Kleiderstangen fiel uns auf, wie viel wertvolle Zeit im Alltag verloren geht, weil man <strong>immer so unglaublich lange braucht, um ein passendes outfit zu finden</strong>. Aus diesem frustrierenden Moment wurde ein ambitioniertes Projekt.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Sektion 3: Das Mindset -->
+            <div class="editorial-row">
+                <div class="editorial-meta">
+                    <div class="giant-number">03</div>
+                    <h2>Das Mindset</h2>
+                </div>
+                <div class="editorial-text">
+                    <p>
+                        Wir glauben an flache Hierarchien, absolute Transparenz und eine Arbeitskultur, die Kreativität atmet. Bei uns fließen komplexe Datenströme, mutige Designideen und strategische Roadmaps harmonisch ineinander. Wir arbeiten jeden Tag leidenschaftlich daran, unsere Plattform wachsen zu lassen und die personalisierte Stilberatung der Zukunft für jeden Realität werden zu lassen.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2026 Personalised stylist.</div>
+        <div>Style Identity: #DAC9BF</div>
+    </footer>
+
+</body>
+</html>
