@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ergebnisse unserer Umfrage</title>
     <style>
         body {
@@ -15,6 +15,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Kreativer, weicher Mesh-Gradienten-Hintergrund (Hell) */
@@ -33,29 +34,47 @@
             opacity: 0.9;
         }
 
-        /* Große, gläserne Premium-Karten */
+        /* Standard-Stile für die Karten (Mobil: Unsichtbare Box, nicht anklickbar) */
         .premium-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
             display: flex;
             flex-direction: column;
             justify-content: center;
             box-sizing: border-box;
-            cursor: pointer; /* Zeigt, dass die Box anklickbar ist */
         }
 
-        .premium-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 40px rgba(99, 102, 241, 0.04);
-            border-color: rgba(99, 102, 241, 0.3);
-            z-index: 10;
+        /* Desktop-Anpassung: Erst ab PCs und Tablets schaltet sich die edle Box & Klickbarkeit ein */
+        @media (min-width: 768px) {
+            .premium-card {
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.7);
+                border-radius: 20px;
+                padding: 24px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                cursor: pointer; /* Zeigt den Klick-Zeiger nur am PC */
+            }
+            
+            @media (hover: hover) {
+                .premium-card:hover {
+                    transform: translateY(-6px) scale(1.02);
+                    background: rgba(255, 255, 255, 0.98);
+                    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 40px rgba(99, 102, 241, 0.04);
+                    border-color: rgba(99, 102, 241, 0.3);
+                    z-index: 10;
+                }
+            }
+
+            .premium-card:active {
+                transform: scale(0.98);
+                background: rgba(255, 255, 255, 0.95);
+            }
         }
 
         header {
@@ -71,8 +90,8 @@
         .header-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 32px;
-            height: 80px;
+            padding: 0 16px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -80,82 +99,74 @@
 
         .logo {
             font-weight: 700;
-            font-size: 22px;
+            font-size: 18px;
             letter-spacing: -0.5px;
             background: linear-gradient(90deg, #4f46e5, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- Ultramodernes Vollbild-Overlay (Lightbox) --- */
+        /* --- Vollbild-Overlay (Lightbox, wird am PC genutzt) --- */
         .lightbox-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(9, 10, 15, 0.9); /* Edles, tiefes Dunkel-Transparent */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(9, 10, 15, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
         }
 
-        /* Wenn aktiv, wird das Overlay sichtbar */
         .lightbox-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
 
         .lightbox-content {
-            max-width: 90%;
-            max-height: 85%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 1300px;
+            max-height: 85vh;
             position: relative;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .lightbox-overlay.active .lightbox-content {
-            transform: scale(1);
         }
 
         .lightbox-img {
             max-width: 100%;
             max-height: 85vh;
             object-fit: contain;
+            background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            background: #ffffff; /* Weißer Kernschatten für die Grafik */
-            padding: 10px;
+            padding: 12px;
             box-sizing: border-box;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
         .lightbox-close {
             position: absolute;
-            top: -50px;
+            top: -60px;
             right: 0;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             font-size: 20px;
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .lightbox-close:hover {
-            background: #ffffff;
-            color: #090a0f;
+            z-index: 120;
         }
     </style>
 </head>
@@ -163,7 +174,6 @@
 
     <div class="mesh-background"></div>
 
-    <!-- Vollbild-Lightbox Container -->
     <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <button class="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -180,107 +190,101 @@
         main {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 64px 32px 100px 32px;
+            padding: 16px 8px 40px 8px;
             width: 100%;
             box-sizing: border-box;
         }
 
         .large-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
+            grid-template-columns: 1fr;
+            gap: 16px;
         }
 
         .screenshot-frame {
             background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            border-radius: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
             overflow: hidden;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            aspect-ratio: 16 / 8; 
+            aspect-ratio: 16 / 9;
         }
 
         .screenshot-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 12px;
+            padding: 4px;
             box-sizing: border-box;
             display: block;
         }
 
-        @media (max-width: 992px) {
-            .large-grid { grid-template-columns: 1fr; gap: 32px; }
-            .screenshot-frame { aspect-ratio: 16 / 9; }
+        @media (min-width: 768px) {
+            main { padding: 64px 32px 100px 32px; }
+            .large-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+            .screenshot-frame { border-radius: 14px; aspect-ratio: 16 / 8; }
+            .screenshot-img { padding: 12px; }
         }
     </style>
 
     <main>
-        <!-- Bei Klick auf eine Karte wird die Funktion openLightbox mit dem jeweiligen Pfad gestartet -->
         <div class="large-grid">
             
-            <!-- Feld 1 -->
-            <div class="premium-card" onclick="openLightbox('Alter.png')">
+            <!-- Feld 1: Alter -->
+            <div class="premium-card" onclick="handleCardClick('Alter.png')">
                 <div class="screenshot-frame">
                     <img src="Alter.png" alt="Alter" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 2 -->
-            <div class="premium-card" onclick="openLightbox('Herkunft.png')">
+            <!-- Feld 2: Herkunft -->
+            <div class="premium-card" onclick="handleCardClick('Herkunft.png')">
                 <div class="screenshot-frame">
                     <img src="Herkunft.png" alt="Herkunft" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 3 -->
-            <div class="premium-card" onclick="openLightbox('Häufigkeit.png')">
+            <!-- Feld 3: Häufigkeit -->
+            <div class="premium-card" onclick="handleCardClick('Häufigkeit.png')">
                 <div class="screenshot-frame">
                     <img src="Häufigkeit.png" alt="Häufigkeit" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 4 -->
-            <div class="premium-card" onclick="openLightbox('Marken.png')">
+            <!-- Feld 4: Marken -->
+            <div class="premium-card" onclick="handleCardClick('Marken.png')">
                 <div class="screenshot-frame">
                     <img src="Marken.png" alt="Marken" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 5 -->
-            <div class="premium-card" onclick="openLightbox('Faktoren.png')">
+            <!-- Feld 5: Faktoren -->
+            <div class="premium-card" onclick="handleCardClick('Faktoren.png')">
                 <div class="screenshot-frame">
                     <img src="Faktoren.png" alt="Faktoren" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 6 -->
-            <div class="premium-card" onclick="openLightbox('Sitz der Marken.png')">
+            <!-- Feld 6: Sitz der Marken -->
+            <div class="premium-card" onclick="handleCardClick('Sitz der Marken.png')">
                 <div class="screenshot-frame">
                     <img src="Sitz der Marken.png" alt="Sitz der Marken" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 7 -->
-            <div class="premium-card" onclick="openLightbox('Wichtigkeit Region.png')">
-                <div class="screenshot-frame">
-                    <img src="Wichtigkeit Region.png" alt="Wichtigkeit Region" class="screenshot-img">
-                </div>
-            </div>
-
-            <!-- Feld 8 -->
-            <div class="premium-card" onclick="openLightbox('Bevorzugte Marke.png')">
+            <!-- Feld 7: Bevorzugte Marke -->
+            <div class="premium-card" onclick="handleCardClick('Bevorzugte Marke.png')">
                 <div class="screenshot-frame">
                     <img src="Bevorzugte Marke.png" alt="Bevorzugte Marke" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 9 -->
-            <div class="premium-card" onclick="openLightbox('Durchschnittliche Bewertung.png')">
+            <!-- Feld 8: Durchschnittliche Bewertung -->
+            <div class="premium-card" onclick="handleCardClick('Durchschnittliche Bewertung.png')">
                 <div class="screenshot-frame">
                     <img src="Durchschnittliche Bewertung.png" alt="Durchschnittliche Bewertung" class="screenshot-img">
                 </div>
@@ -289,8 +293,17 @@
         </div>
     </main>
 
-    <!-- Super-einfaches JavaScript für die Lightbox-Steuerung -->
     <script>
+        // Prüft, ob es sich um ein Smartphone/Touch-Gerät handelt, oder ob eine Maus genutzt wird
+        function handleCardClick(imageSrc) {
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            // Wenn es kein Handy ist (Breite >= 768px UND keine reine Touch-Bedienung), öffne die Lightbox
+            if (window.innerWidth >= 768 && !isTouchDevice) {
+                openLightbox(imageSrc);
+            }
+        }
+
         function openLightbox(imageSrc) {
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
@@ -298,7 +311,6 @@
             lightboxImg.src = imageSrc;
             lightbox.classList.add('active');
             
-            // Verhindert das Scrollen im Hintergrund, wenn die Großansicht offen ist
             document.body.style.overflow = 'hidden';
         }
 
@@ -306,11 +318,9 @@
             const lightbox = document.getElementById('lightbox');
             lightbox.classList.remove('active');
             
-            // Reaktiviert das Scrollen
             document.body.style.overflow = '';
         }
 
-        // Erlaubt das Schließen der Großansicht per ESC-Taste auf der Tastatur
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeLightbox();
