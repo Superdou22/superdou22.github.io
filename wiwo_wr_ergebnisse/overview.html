@@ -34,7 +34,7 @@
             opacity: 0.9;
         }
 
-        /* Standard-Stile für die Karten (Mobil: Unsichtbare Box, nicht anklickbar) */
+        /* Standard-Stile für die Karten (Mobil: Unsichtbare Box, vertikal angeordnet) */
         .premium-card {
             background: transparent;
             border: none;
@@ -43,8 +43,17 @@
             box-shadow: none;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             box-sizing: border-box;
+        }
+
+        /* Schicke Überschrift über jedem Bild */
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #171717;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.3px;
         }
 
         /* Desktop-Anpassung: Erst ab PCs und Tablets schaltet sich die edle Box & Klickbarkeit ein */
@@ -58,7 +67,12 @@
                 padding: 24px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01), inset 0 1px 0 rgba(255, 255, 255, 0.8);
                 transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                cursor: pointer; /* Zeigt den Klick-Zeiger nur am PC */
+                cursor: pointer;
+            }
+            
+            .card-title {
+                font-size: 18px;
+                margin: 0 0 16px 0;
             }
             
             @media (hover: hover) {
@@ -190,7 +204,7 @@
         main {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 16px 8px 40px 8px;
+            padding: 24px 12px 50px 12px;
             width: 100%;
             box-sizing: border-box;
         }
@@ -198,7 +212,7 @@
         .large-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 24px;
         }
 
         .screenshot-frame {
@@ -236,57 +250,65 @@
             
             <!-- Feld 1: Alter -->
             <div class="premium-card" onclick="handleCardClick('Alter.png')">
+                <h3 class="card-title">Alter</h3>
                 <div class="screenshot-frame">
                     <img src="Alter.png" alt="Alter" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 2: Herkunft -->
+            <!-- Feld 2: Wohnort -->
             <div class="premium-card" onclick="handleCardClick('Herkunft.png')">
+                <h3 class="card-title">Wohnort</h3>
                 <div class="screenshot-frame">
-                    <img src="Herkunft.png" alt="Herkunft" class="screenshot-img">
+                    <img src="Herkunft.png" alt="Wohnort" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 3: Häufigkeit -->
+            <!-- Feld 3: Kaufhäufigkeit von Sneakern -->
             <div class="premium-card" onclick="handleCardClick('Häufigkeit.png')">
+                <h3 class="card-title">Kaufhäufigkeit von Sneakern</h3>
                 <div class="screenshot-frame">
-                    <img src="Häufigkeit.png" alt="Häufigkeit" class="screenshot-img">
+                    <img src="Häufigkeit.png" alt="Kaufhäufigkeit von Sneakern" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 4: Marken -->
+            <!-- Feld 4: Marken die am Häufigsten gekauft werden -->
             <div class="premium-card" onclick="handleCardClick('Marken.png')">
+                <h3 class="card-title">Marken die am Häufigsten gekauft werden</h3>
                 <div class="screenshot-frame">
-                    <img src="Marken.png" alt="Marken" class="screenshot-img">
+                    <img src="Marken.png" alt="Marken die am Häufigsten gekauft werden" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 5: Faktoren -->
+            <!-- Feld 5: Kauffaktoren -->
             <div class="premium-card" onclick="handleCardClick('Faktoren.png')">
+                <h3 class="card-title">Kauffaktoren</h3>
                 <div class="screenshot-frame">
-                    <img src="Faktoren.png" alt="Faktoren" class="screenshot-img">
+                    <img src="Faktoren.png" alt="Kauffaktoren" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 6: Sitz der Marken -->
+            <!-- Feld 6: Wissen über Markenherkunft -->
             <div class="premium-card" onclick="handleCardClick('Sitz der Marken.png')">
+                <h3 class="card-title">Wissen über Markenherkunft</h3>
                 <div class="screenshot-frame">
-                    <img src="Sitz der Marken.png" alt="Sitz der Marken" class="screenshot-img">
+                    <img src="Sitz der Marken.png" alt="Wissen über Markenherkunft" class="screenshot-img">
                 </div>
             </div>
 
             <!-- Feld 7: Bevorzugte Marke -->
             <div class="premium-card" onclick="handleCardClick('Bevorzugte Marke.png')">
+                <h3 class="card-title">Bevorzugte Marke</h3>
                 <div class="screenshot-frame">
                     <img src="Bevorzugte Marke.png" alt="Bevorzugte Marke" class="screenshot-img">
                 </div>
             </div>
 
-            <!-- Feld 8: Durchschnittliche Bewertung -->
+            <!-- Feld 8: Wichtigkeit beim Kauf von Regionalität der Marken -->
             <div class="premium-card" onclick="handleCardClick('Durchschnittliche Bewertung.png')">
+                <h3 class="card-title">Wichtigkeit beim Kauf von Regionalität der Marken</h3>
                 <div class="screenshot-frame">
-                    <img src="Durchschnittliche Bewertung.png" alt="Durchschnittliche Bewertung" class="screenshot-img">
+                    <img src="Durchschnittliche Bewertung.png" alt="Wichtigkeit beim Kauf von Regionalität der Marken" class="screenshot-img">
                 </div>
             </div>
 
@@ -294,11 +316,9 @@
     </main>
 
     <script>
-        // Prüft, ob es sich um ein Smartphone/Touch-Gerät handelt, oder ob eine Maus genutzt wird
         function handleCardClick(imageSrc) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             
-            // Wenn es kein Handy ist (Breite >= 768px UND keine reine Touch-Bedienung), öffne die Lightbox
             if (window.innerWidth >= 768 && !isTouchDevice) {
                 openLightbox(imageSrc);
             }
